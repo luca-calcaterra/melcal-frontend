@@ -1,0 +1,39 @@
+/* reset base */
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
+
+.app-main {
+  display: flex;
+  flex: 1;
+  width: 100%;
+  min-width: 0; /* importante per evitare overflow */
+  background-color: #f5f7fa;
+}
+
+/* colonne sinistra e destra uguali, senza barre */
+.app-column {
+  flex: 1;
+  padding: 2rem;
+  min-width: 0; /* evita che contenuti larghi schiaccino il layout */
+  overflow-y: auto;
+}
+
+.app-column.left {
+  background-color: #ffffff;
+}
+
+.app-column.right {
+  background-color: #ffffff;
+}
