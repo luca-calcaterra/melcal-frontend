@@ -5,7 +5,7 @@
   "routes": [
     {
       "route": "/*",
-      "allowedRoles": [ "letmein" ]
+      "allowedRoles": [ "authenticated" ]
     }
   ],
   "responseOverrides": {
