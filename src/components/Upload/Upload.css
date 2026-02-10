@@ -1,5 +1,19 @@
 .upload-container {
   padding: 1rem;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.upload-title {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.upload-container input[type="file"] {
+  padding: 0.4rem 0;
 }
 
 .primary-button {
@@ -11,31 +25,12 @@
   cursor: pointer;
 }
 
-.secondary-button {
-  background-color: #ccc;
-  border: none;
-  padding: 0.6rem 1.2rem;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.upload-modal {
-  margin-top: 1rem;
-  padding: 1rem;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  background-color: #fafafa;
-}
-
-.modal-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.5rem;
-  margin-top: 1rem;
+.primary-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .status-message {
-  margin-top: 1rem;
   font-weight: 600;
 }
 
@@ -57,4 +52,40 @@
   border-radius: 4px;
   cursor: pointer;
   color: #2e7d32;
+}
+
+
+.job-success-box {
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  background-color: #e6f4ea;
+  border: 1px solid #b7dfc5;
+  border-radius: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.job-success-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  color: #1e4620;
+}
+
+.job-id {
+  font-family: monospace;
+  font-size: 0.9rem;
+}
+
+.copy-icon-button {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: #1e4620;
+}
+
+.copy-icon-button:hover {
+  opacity: 0.7;
 }

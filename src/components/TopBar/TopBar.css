@@ -3,7 +3,7 @@
   display: flex;
   align-items: center;
   padding: 0 2rem;
-  background-color: #f2f3f8;
+  background-color: #005386;
   border-bottom: 1px solid #e0e0e0;
 }
 
@@ -20,6 +20,6 @@
 
 .topbar-title {
   font-size: 1.25rem;
-  font-weight: 600;
-  color: #333;
+  font-weight: bold;
+  color: #ffffff;
 }
