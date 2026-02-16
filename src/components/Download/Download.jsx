@@ -54,7 +54,7 @@ export default function Download({ initialJobId }) {
 
       // 1️⃣ Recupero stato job
       const statusResponse = await fetch(
-        `/api/rfq-validation/jobs/${jobId}`,
+        `/rfq-validation/jobs/${jobId}`,
         {
           method: "GET",
           headers: {
@@ -73,7 +73,7 @@ export default function Download({ initialJobId }) {
       // ✅ JOB COMPLETATO
       if (jobStatus.completed === true) {
         const downloadResponse = await fetch(
-          `/api/validation-results/download/${jobId}`, { 
+          `/validation-results/download/${jobId}`, { 
             method: "POST", 
             headers: {
               "Content-Type": "application/json",

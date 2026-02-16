@@ -12,7 +12,7 @@ export default function Table() {
       setLoading(true);
 
       const response = await fetch(
-        `/api/rfq-validation/jobs`,
+        `/rfq-validation/jobs`,
         {
           method: "GET",
           headers: {

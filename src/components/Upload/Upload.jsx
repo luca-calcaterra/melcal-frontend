@@ -48,7 +48,7 @@ export default function Upload({ onJobStarted }) {
         token_expiration_seconds: 600,
       };
 
-      const stageResponse = await fetch(`/api/rfq-validation/stage`, {
+      const stageResponse = await fetch(`/rfq-validation/stage`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
