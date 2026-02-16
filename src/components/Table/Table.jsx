@@ -2,9 +2,6 @@ import { useEffect, useState } from "react";
 import "./Table.css";
 import { useAuth } from "../../auth/useAuth";
 
-const API_BASE_URL =
-  "https://melcal-function-app-fehvdpdtg8ewgcah.eastus-01.azurewebsites.net";
-
 export default function Table() {
   const { token } = useAuth();
   const [jobs, setJobs] = useState([]);
@@ -15,7 +12,7 @@ export default function Table() {
       setLoading(true);
 
       const response = await fetch(
-        `${API_BASE_URL}/rfq-validation/jobs`,
+        `/rfq-validation/jobs`,
         {
           method: "GET",
           headers: {

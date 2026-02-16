@@ -2,9 +2,6 @@ import { useState } from "react";
 import "./Upload.css";
 import { useAuth } from "../../auth/useAuth";
 
-const API_BASE_URL =
-  "https://melcal-function-app-fehvdpdtg8ewgcah.eastus-01.azurewebsites.net";
-
 export default function Upload({ onJobStarted }) {
   const { token } = useAuth();
   const [files, setFiles] = useState([]);
@@ -51,7 +48,7 @@ export default function Upload({ onJobStarted }) {
         token_expiration_seconds: 600,
       };
 
-      const stageResponse = await fetch(`${API_BASE_URL}/rfq-validation/stage`, {
+      const stageResponse = await fetch(`/rfq-validation/stage`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

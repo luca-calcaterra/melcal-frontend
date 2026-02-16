@@ -1,7 +1,7 @@
 import Keycloak from "keycloak-js";
 
 const keycloak = new Keycloak({
-  url: "http://localhost:8080/",
+  url: "https://keycloak-app--0000001.ambitioussky-de3f00f7.eastus.azurecontainerapps.io/",
   realm: "melcal",
   clientId: "react-frontend",
 });

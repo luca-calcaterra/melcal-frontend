@@ -2,9 +2,6 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../../auth/useAuth";
 import "./Download.css";
 
-const API_BASE_URL =
-  "https://melcal-function-app-fehvdpdtg8ewgcah.eastus-01.azurewebsites.net";
-
 export default function Download({ initialJobId }) {
   const { token } = useAuth();
   const [jobId, setJobId] = useState("");
@@ -57,7 +54,7 @@ export default function Download({ initialJobId }) {
 
       // 1️⃣ Recupero stato job
       const statusResponse = await fetch(
-        `${API_BASE_URL}/rfq-validation/jobs/${jobId}`,
+        `/rfq-validation/jobs/${jobId}`,
         {
           method: "GET",
           headers: {
@@ -76,7 +73,7 @@ export default function Download({ initialJobId }) {
       // ✅ JOB COMPLETATO
       if (jobStatus.completed === true) {
         const downloadResponse = await fetch(
-          `${API_BASE_URL}/validation-results/download/${jobId}`, { 
+          `/validation-results/download/${jobId}`, { 
             method: "POST", 
             headers: {
               "Content-Type": "application/json",
