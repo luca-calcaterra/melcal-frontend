@@ -1,14 +1,18 @@
 import { useState } from "react";
 import "./Upload.css";
+import { useAuth } from "../../auth/useAuth";
 
-const API_BASE_URL = "http://localhost:8000";
+const API_BASE_URL =
+  "https://melcal-function-app-fehvdpdtg8ewgcah.eastus-01.azurewebsites.net";
 
 export default function Upload({ onJobStarted }) {
+  const { token } = useAuth();
   const [files, setFiles] = useState([]);
   const [status, setStatus] = useState("idle"); // idle | uploading | success | error
   const [jobId, setJobId] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
 
+  // Gestione selezione file
   const handleFileChange = (e) => {
     const selectedFiles = Array.from(e.target.files);
 
@@ -19,16 +23,17 @@ export default function Upload({ onJobStarted }) {
     );
 
     if (pdfFiles.length !== selectedFiles.length) {
-      setErrorMessage("Sono ammessi solo file PDF.");
+      setErrorMessage("Sono ammessi solo file PDF");
       setTimeout(() => setErrorMessage(""), 3000);
     }
 
     setFiles(pdfFiles);
   };
 
+  // Avvio job
   const startJob = async () => {
     if (files.length === 0) {
-      setErrorMessage("Seleziona almeno un file PDF.");
+      setErrorMessage("Seleziona almeno un file PDF");
       setTimeout(() => setErrorMessage(""), 3000);
       return;
     }
@@ -37,34 +42,39 @@ export default function Upload({ onJobStarted }) {
       setStatus("uploading");
       setJobId(null); // reset box precedente
 
-      // 1️⃣ Creazione job
-      const uploadResponse = await fetch(
-        `${API_BASE_URL}/rfq-documents/upload`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            documents: files.map((file, index) => [index + 1, file.name]),
-          }),
-        }
-      );
+      // 1️⃣ POST rfq-validation/stage
+      const bodyPayload = {
+        documents: files.map((file, index) => ({
+          id: index.toString(),
+          name: file.name,
+        })),
+        token_expiration_seconds: 600,
+      };
 
-      if (!uploadResponse.ok) {
+      const stageResponse = await fetch(`${API_BASE_URL}/rfq-validation/stage`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify(bodyPayload),
+      });
+
+      if (!stageResponse.ok) {
         throw new Error("Errore nella creazione del job");
       }
 
-      const { job_id, documents } = await uploadResponse.json();
+      const stageData = await stageResponse.json();
+      const job_id = stageData.job_id;
+      const documents = stageData.upload.documents;
 
-      // 2️⃣ Upload file
+      // 2️⃣ Upload dei file sui SAS URL
       await Promise.all(
-        documents.map(async ([_, fileName, uploadUrl]) => {
-          const file = files.find((f) => f.name === fileName);
+        documents.map(async (doc) => {
+          const file = files.find((f) => f.name === doc.name);
+          if (!file) throw new Error(`File ${doc.name} non trovato`);
 
-          if (!file) {
-            throw new Error(`File ${fileName} non trovato`);
-          }
-
-          const putResponse = await fetch(uploadUrl, {
+          const putResponse = await fetch(doc.sas_url, {
             method: "PUT",
             headers: {
               "x-ms-blob-type": "BlockBlob",
@@ -74,21 +84,12 @@ export default function Upload({ onJobStarted }) {
           });
 
           if (!putResponse.ok) {
-            throw new Error(`Errore upload file ${fileName}`);
+            throw new Error(`Errore upload file ${doc.name}`);
           }
         })
       );
 
-      // 3️⃣ Avvio validazione
-      const validationResponse = await fetch(
-        `${API_BASE_URL}/rfq-validation/start/${job_id}`,
-        { method: "POST" }
-      );
-
-      if (!validationResponse.ok) {
-        throw new Error("Errore avvio validazione");
-      }
-
+      // ✅ Job avviato con successo
       setJobId(job_id);
       onJobStarted?.(job_id);
       await navigator.clipboard.writeText(job_id); // copia automatica
@@ -98,12 +99,11 @@ export default function Upload({ onJobStarted }) {
       setStatus("error");
       setJobId(null);
 
-      setTimeout(() => {
-        setStatus("idle");
-      }, 3000);
+      setTimeout(() => setStatus("idle"), 3000);
     }
   };
 
+  // Copia Job ID
   const copyJobId = async () => {
     if (!jobId) return;
     await navigator.clipboard.writeText(jobId);
@@ -128,14 +128,9 @@ export default function Upload({ onJobStarted }) {
         {status === "uploading" ? "Caricamento in corso..." : "Inizia Job"}
       </button>
 
-      {errorMessage && (
-        <p className="status-message error">{errorMessage}</p>
-      )}
-
+      {errorMessage && <p className="status-message error">{errorMessage}</p>}
       {status === "error" && (
-        <p className="status-message error">
-          Errore nel caricamento dei file
-        </p>
+        <p className="status-message error">Errore nel caricamento dei file</p>
       )}
 
       {jobId && (

@@ -9,7 +9,7 @@
 .upload-title {
   margin: 0 0 0.5rem 0;
   font-size: 1.2rem;
-  font-weight: 600;
+  font-weight: blod;
 }
 
 .upload-container input[type="file"] {
@@ -35,7 +35,13 @@
 }
 
 .status-message.error {
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  background-color: #fff3cd;
+  border: 1px solid #ffeeba;
+  border-radius: 4px;
   color: #c62828;
+  font-weight: 500;
 }
 
 .status-message.success {

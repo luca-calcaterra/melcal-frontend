@@ -1,11 +1,15 @@
 import { useEffect, useState } from "react";
+import { useAuth } from "../../auth/useAuth";
 import "./Download.css";
 
-const API_BASE_URL = "http://localhost:8000";
+const API_BASE_URL =
+  "https://melcal-function-app-fehvdpdtg8ewgcah.eastus-01.azurewebsites.net";
 
 export default function Download({ initialJobId }) {
+  const { token } = useAuth();
   const [jobId, setJobId] = useState("");
   const [popupMessage, setPopupMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   // Precompila SOLO se il job è stato appena creato
   useEffect(() => {
@@ -15,8 +19,14 @@ export default function Download({ initialJobId }) {
   }, [initialJobId]);
 
   const showPopup = (message) => {
+    setErrorMessage("");
     setPopupMessage(message);
-    setTimeout(() => setPopupMessage(""), 3000);
+    setTimeout(() => setPopupMessage(""), 4000);
+  };
+
+  const showError = (message) => {
+    setPopupMessage("");
+    setErrorMessage(message);
   };
 
   const downloadFileFromUrl = async (url, filename) => {
@@ -42,9 +52,19 @@ export default function Download({ initialJobId }) {
     }
 
     try {
-      // 1️⃣ Stato job
+      setErrorMessage("");
+      setPopupMessage("");
+
+      // 1️⃣ Recupero stato job
       const statusResponse = await fetch(
-        `${API_BASE_URL}/jobs/${jobId}`
+        `${API_BASE_URL}/rfq-validation/jobs/${jobId}`,
+        {
+          method: "GET",
+          headers: {
+            "accept": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+        }
       );
 
       if (!statusResponse.ok) {
@@ -53,20 +73,16 @@ export default function Download({ initialJobId }) {
 
       const jobStatus = await statusResponse.json();
 
-      if (!jobStatus.completed && jobStatus.status === "running") {
-        showPopup("Il job non è ancora terminato");
-        return;
-      }
-
-      if (
-        jobStatus.completed === true &&
-        jobStatus.status === "terminated" &&
-        !jobStatus.error
-      ) {
-        // 2️⃣ Download risultati
+      // ✅ JOB COMPLETATO
+      if (jobStatus.completed === true) {
         const downloadResponse = await fetch(
-          `${API_BASE_URL}/validation-results/download/${jobId}`,
-          { method: "POST" }
+          `${API_BASE_URL}/validation-results/download/${jobId}`, { 
+            method: "POST", 
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`
+            },
+          }
         );
 
         if (!downloadResponse.ok) {
@@ -79,10 +95,35 @@ export default function Download({ initialJobId }) {
           result_file.url,
           result_file.name
         );
+
+        showPopup("Download avviato");
+        return;
+      }
+
+      // ❌ JOB NON COMPLETATO → analizziamo status
+      switch (jobStatus.status) {
+        case "staging":
+          showPopup("Job in attesa di esecuzione. Riprova più tardi.");
+          break;
+
+        case "running":
+          showPopup("Job in esecuzione. Riprova più tardi.");
+          break;
+
+        case "failed":
+          showError(
+            jobStatus.error
+              ? `Esecuzione fallita: ${jobStatus.error}`
+              : "Esecuzione fallita"
+          );
+          break;
+
+        default:
+          showPopup("Stato job sconosciuto");
       }
     } catch (error) {
       console.error(error);
-      showPopup("Errore nel recupero dei risultati");
+      showError(`${error}`);
     }
   };
 
@@ -102,7 +143,11 @@ export default function Download({ initialJobId }) {
       </button>
 
       {popupMessage && (
-        <div className="popup">{popupMessage}</div>
+        <div className="popup info">{popupMessage}</div>
+      )}
+
+      {errorMessage && (
+        <div className="popup error">{errorMessage}</div>
       )}
     </div>
   );

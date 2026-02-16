@@ -1,16 +1,11 @@
 .topbar {
   height: 64px;
   display: flex;
+  justify-content: space-between;
   align-items: center;
   padding: 0 2rem;
   background-color: #005386;
   border-bottom: 1px solid #e0e0e0;
-}
-
-.topbar-left {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
 }
 
 .topbar-logo {
@@ -22,4 +17,28 @@
   font-size: 1.25rem;
   font-weight: bold;
   color: #ffffff;
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+}
+
+.logout-button {
+  background-color: #d32f2f;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.logout-button:hover {
+  background-color: #b71c1c;
 }

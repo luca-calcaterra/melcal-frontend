@@ -3,6 +3,7 @@
   flex-direction: column;
   gap: 0.75rem;
   max-width: 400px;
+  font-weight: bold;
 }
 
 .download-container input {
@@ -17,6 +18,6 @@
   background-color: #fff3cd;
   border: 1px solid #ffeeba;
   border-radius: 4px;
-  color: #f39000;
+  color: #c62828;
   font-weight: 500;
 }
