@@ -1,7 +1,9 @@
 import Keycloak from "keycloak-js";
 
+const KEYCLOAK_URL = import.meta.env.VITE_KEYCLOAK_URL;
+
 const keycloak = new Keycloak({
-  url: "https://keycloak-app--0000002.ambitioussky-de3f00f7.eastus.azurecontainerapps.io/",
+  url: `${KEYCLOAK_URL}`,
   realm: "melcal",
   clientId: "react-frontend",
 });

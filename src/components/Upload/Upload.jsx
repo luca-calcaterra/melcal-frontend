@@ -2,6 +2,8 @@ import { useState } from "react";
 import "./Upload.css";
 import { useAuth } from "../../auth/useAuth";
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 export default function Upload({ onJobStarted }) {
   const { token } = useAuth();
   const [files, setFiles] = useState([]);
@@ -37,9 +39,9 @@ export default function Upload({ onJobStarted }) {
 
     try {
       setStatus("uploading");
-      setJobId(null); // reset box precedente
+      setJobId(null);
 
-      // 1️⃣ POST rfq-validation/stage
+      // 1️⃣ STAGE
       const bodyPayload = {
         documents: files.map((file, index) => ({
           id: index.toString(),
@@ -48,14 +50,17 @@ export default function Upload({ onJobStarted }) {
         token_expiration_seconds: 600,
       };
 
-      const stageResponse = await fetch(`/rfq-validation/stage`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        },
-        body: JSON.stringify(bodyPayload),
-      });
+      const stageResponse = await fetch(
+        `${API_BASE_URL}/rfq-validation/stage`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(bodyPayload),
+        }
+      );
 
       if (!stageResponse.ok) {
         throw new Error("Errore nella creazione del job");
@@ -65,7 +70,7 @@ export default function Upload({ onJobStarted }) {
       const job_id = stageData.job_id;
       const documents = stageData.upload.documents;
 
-      // 2️⃣ Upload dei file sui SAS URL
+      // 2️⃣ UPLOAD SU BLOB
       await Promise.all(
         documents.map(async (doc) => {
           const file = files.find((f) => f.name === doc.name);
@@ -86,11 +91,46 @@ export default function Upload({ onJobStarted }) {
         })
       );
 
-      // ✅ Job avviato con successo
+      // 3️⃣ AVVIO JOB
+      const startResponse = await fetch(
+        `${API_BASE_URL}/rfq-validation/jobs/${job_id}/start`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            data_extraction: {
+              requirements: {
+                categories: [],
+              },
+              general_info: {
+                skip: false,
+              },
+            },
+          }),
+        }
+      );
+
+      if (!startResponse.ok) {
+        throw new Error("Errore nell'avvio del job");
+      }
+
+      const startData = await startResponse.json();
+
+      if (!startData.started) {
+        throw new Error(
+          startData.error || "Il job non è stato avviato correttamente"
+        );
+      }
+
+      // ✅ SOLO ORA consideriamo il job avviato
       setJobId(job_id);
       onJobStarted?.(job_id);
-      await navigator.clipboard.writeText(job_id); // copia automatica
       setStatus("success");
+
     } catch (error) {
       console.error(error);
       setStatus("error");
@@ -100,10 +140,15 @@ export default function Upload({ onJobStarted }) {
     }
   };
 
+
   // Copia Job ID
   const copyJobId = async () => {
     if (!jobId) return;
-    await navigator.clipboard.writeText(jobId);
+    try {
+      await navigator.clipboard.writeText(jobId);
+    } catch (err) {
+      console.error("Errore copia clipboard:", err);
+    }
   };
 
   return (
@@ -133,7 +178,7 @@ export default function Upload({ onJobStarted }) {
       {jobId && (
         <div className="job-success-box">
           <div className="job-success-text">
-            <strong>Job avviato. Id copiato negli appunti</strong>
+            <strong>Job avviato con successo</strong>
             <span className="job-id">{jobId}</span>
           </div>
 

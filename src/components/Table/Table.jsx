@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import "./Table.css";
 import { useAuth } from "../../auth/useAuth";
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 export default function Table() {
   const { token } = useAuth();
   const [jobs, setJobs] = useState([]);
@@ -12,7 +14,7 @@ export default function Table() {
       setLoading(true);
 
       const response = await fetch(
-        `/rfq-validation/jobs`,
+        `${API_BASE_URL}/rfq-validation/jobs`,
         {
           method: "GET",
           headers: {

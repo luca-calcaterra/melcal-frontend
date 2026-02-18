@@ -1,9 +1,11 @@
 .table-container {
   width: 100%;
+  overflow-x: auto; /* sicurezza in caso di schermi molto piccoli */
 }
 
 .job-table {
-  width: 100%;
+  width: auto;              /* NON più 100% */
+  min-width: max-content;   /* si espande solo quanto serve */
   border-collapse: collapse;
   margin-top: 15px;
   background-color: white;
@@ -14,8 +16,9 @@
 .job-table th,
 .job-table td {
   border: 1px solid #ddd;
-  padding: 10px;
+  padding: 10px 14px;
   text-align: left;
+  white-space: nowrap;  /* evita spezzatura UUID */
 }
 
 .job-table th {

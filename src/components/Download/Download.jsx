@@ -2,6 +2,10 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../../auth/useAuth";
 import "./Download.css";
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+  import.meta.env.VITE_LOGIN_API_URL
+
 export default function Download({ initialJobId }) {
   const { token } = useAuth();
   const [jobId, setJobId] = useState("");
@@ -54,7 +58,7 @@ export default function Download({ initialJobId }) {
 
       // 1️⃣ Recupero stato job
       const statusResponse = await fetch(
-        `/rfq-validation/jobs/${jobId}`,
+        `${API_BASE_URL}/rfq-validation/jobs/${jobId}`,
         {
           method: "GET",
           headers: {
@@ -73,7 +77,7 @@ export default function Download({ initialJobId }) {
       // ✅ JOB COMPLETATO
       if (jobStatus.completed === true) {
         const downloadResponse = await fetch(
-          `/validation-results/download/${jobId}`, { 
+          `${API_BASE_URL}/rfq-validation/results/download/${jobId}`, { 
             method: "POST", 
             headers: {
               "Content-Type": "application/json",
