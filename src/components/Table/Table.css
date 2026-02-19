@@ -15,7 +15,7 @@
 
 .table-refresh {
   border: 1px solid #c9ced6;
-  background: #ffffff;
+  background: #005386;
   border-radius: 6px;
   padding: 6px 10px;
   cursor: pointer;
@@ -34,7 +34,8 @@
 }
 
 .job-table {
-  width: 100%;
+  width: auto;
+  min-width: max-content;
   border-collapse: collapse;
   background-color: white;
   border-radius: 8px;
