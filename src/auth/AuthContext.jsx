@@ -11,8 +11,9 @@ export function AuthProvider({ children }) {
     initKeycloak({
         onLoad: "check-sso",
         pkceMethod: "S256",
-        silentCheckSsoRedirectUri:
-          window.location.origin + "/silent-check-sso.html",
+        checkLoginIframe: false,
+        // silentCheckSsoRedirectUri:
+        //   window.location.origin + "/silent-check-sso.html",
       })
       .then((auth) => {
         if (!auth) {
