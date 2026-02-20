@@ -36,7 +36,7 @@
 /* ✅ la tabella NON sconfina: si adatta al container */
 .job-table {
   width: 100%;
-  table-layout: fixed;          /* fondamentale */
+  table-layout: fixed; /* fondamentale */
   border-collapse: collapse;
   background-color: white;
   border-radius: 8px;
@@ -51,28 +51,35 @@
   vertical-align: top;
 }
 
-/* colonne: manteniamo actions stretta, le altre si distribuiscono */
-.col-actions {
-  width: 96px;                 /* abbastanza per bottone + “copiato” */
-  white-space: nowrap;
-  text-align: right;
+/* ✅ dimensioni colonne
+   - Job ID accorciata (qui puoi regolare la larghezza)
+   - Timestamp e Stato come prima
+*/
+.col-jobid {
+  width: 300px; /* <-- RIDUCI QUI (es: 260px) se la vuoi ancora più corta */
 }
 
 .col-timestamp {
-  width: 190px;                /* timestamp compatto */
+  width: 190px;
   white-space: nowrap;
 }
 
 .col-status {
-  width: 180px;                /* pill + testo */
+  width: 180px;
 }
 
-.col-jobid {
-  width: auto;                 /* prende lo spazio rimanente */
+/* ✅ Job ID + bottone copia nella stessa colonna */
+.jobid-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0; /* importantissimo per far funzionare ellipsis */
 }
 
-/* ✅ Job id: non allarga la tabella, si tronca */
+/* ✅ Job id troncato con ... */
 .job-id-cell {
+  flex: 1;
+  min-width: 0;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   font-size: 13px;
   white-space: nowrap;
@@ -157,7 +164,9 @@
   overflow-wrap: anywhere;
 }
 
+/* pulsante copia vicino al job id */
 .copy-btn {
+  flex-shrink: 0;
   background: none;
   border: 1px solid #c9ced6;
   border-radius: 6px;
@@ -170,14 +179,15 @@
 }
 
 .copied-badge {
-  margin-left: 8px;
+  margin-top: 6px;
   font-size: 12px;
   color: #1e4620;
   font-weight: 600;
 }
 
-/* Mobile: permetti al job id di andare a capo se serve */
+/* Mobile */
 @media (max-width: 768px) {
+  .col-jobid { width: 240px; }  /* più stretta su mobile */
   .col-timestamp { width: 160px; }
   .col-status { width: 150px; }
 

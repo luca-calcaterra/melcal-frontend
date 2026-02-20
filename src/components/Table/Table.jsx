@@ -107,7 +107,6 @@ export default function Table() {
                 <th className="col-jobid">Job ID</th>
                 <th className="col-timestamp">Timestamp</th>
                 <th className="col-status">Stato</th>
-                <th className="col-actions">Copia</th>
               </tr>
             </thead>
 
@@ -118,7 +117,23 @@ export default function Table() {
 
                 return (
                   <tr key={job.id}>
-                    <td className="col-jobid job-id-cell">{job.id}</td>
+                    <td className="col-jobid">
+                      <div className="jobid-wrapper">
+                        <span className="job-id-cell" title={job.id}>
+                          {job.id}
+                        </span>
+
+                        <button
+                          className="copy-btn"
+                          onClick={() => copyToClipboard(job.id)}
+                          title="Copia Job ID"
+                        >
+                          ⧉
+                        </button>
+                      </div>
+
+                      {isCopied && <span className="copied-badge">Copiato</span>}
+                    </td>
 
                     <td className="col-timestamp job-ts-cell">
                       {formatTimestamp(job.timestamp)}
@@ -145,17 +160,6 @@ export default function Table() {
                       {meta.type === "failed" && meta.error && (
                         <div className="status-error-inline">{meta.error}</div>
                       )}
-                    </td>
-
-                    <td className="col-actions">
-                      <button
-                        className="copy-btn"
-                        onClick={() => copyToClipboard(job.id)}
-                        title="Copia Job ID"
-                      >
-                        ⧉
-                      </button>
-                      {isCopied && <span className="copied-badge">Copiato</span>}
                     </td>
                   </tr>
                 );
