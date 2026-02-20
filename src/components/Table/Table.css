@@ -26,17 +26,15 @@
   cursor: not-allowed;
 }
 
-/* niente overflow orizzontale brutto */
 .table-scroll {
   width: 100%;
   overflow-x: hidden;
   margin-top: 12px;
 }
 
-/* ✅ la tabella NON sconfina: si adatta al container */
 .job-table {
   width: 100%;
-  table-layout: fixed; /* fondamentale */
+  table-layout: fixed;
   border-collapse: collapse;
   background-color: white;
   border-radius: 8px;
@@ -51,32 +49,31 @@
   vertical-align: top;
 }
 
-/* ✅ dimensioni colonne
-   - Job ID accorciata (qui puoi regolare la larghezza)
-   - Timestamp e Stato come prima
-*/
-.col-jobid {
-  width: 200px; /* <-- RIDUCI QUI (es: 260px) se la vuoi ancora più corta */
+/* ✅ FORZIAMO LE COLONNE anche senza className nel JSX */
+.job-table th:nth-child(1),
+.job-table td:nth-child(1) {
+  width: 220px; /* Job ID (qui decidi tu) */
 }
 
-.col-timestamp {
-  width: 150px;
+.job-table th:nth-child(2),
+.job-table td:nth-child(2) {
+  width: 160px; /* Timestamp */
   white-space: nowrap;
 }
 
-.col-status {
-  width: 100px;
+.job-table th:nth-child(3),
+.job-table td:nth-child(3) {
+  width: 140px; /* Stato */
 }
 
-/* ✅ Job ID + bottone copia nella stessa colonna */
+/* ✅ wrapper Job ID + copia nella stessa colonna */
 .jobid-wrapper {
   display: flex;
   align-items: center;
   gap: 8px;
-  min-width: 0; /* importantissimo per far funzionare ellipsis */
+  min-width: 0;
 }
 
-/* ✅ Job id troncato con ... */
 .job-id-cell {
   flex: 1;
   min-width: 0;
@@ -164,7 +161,7 @@
   overflow-wrap: anywhere;
 }
 
-/* pulsante copia vicino al job id */
+/* pulsante copia */
 .copy-btn {
   flex-shrink: 0;
   background: none;
@@ -187,9 +184,20 @@
 
 /* Mobile */
 @media (max-width: 768px) {
-  .col-jobid { width: 240px; }  /* più stretta su mobile */
-  .col-timestamp { width: 160px; }
-  .col-status { width: 150px; }
+  .job-table th:nth-child(1),
+  .job-table td:nth-child(1) {
+    width: 200px;
+  }
+
+  .job-table th:nth-child(2),
+  .job-table td:nth-child(2) {
+    width: 140px;
+  }
+
+  .job-table th:nth-child(3),
+  .job-table td:nth-child(3) {
+    width: 130px;
+  }
 
   .job-id-cell {
     white-space: normal;
