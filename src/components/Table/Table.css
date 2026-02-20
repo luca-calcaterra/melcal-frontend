@@ -26,15 +26,19 @@
   cursor: not-allowed;
 }
 
+/* ✅ consenti scroll SOLO se necessario */
 .table-scroll {
   width: 100%;
   overflow-x: auto;
   margin-top: 12px;
 }
 
+/* ✅ la tabella NON è più 100%: diventa larga quanto le colonne */
 .job-table {
-  width: 100%;
-  table-layout: auto;
+  width: auto;                /* <-- CHIAVE */
+  display: inline-table;      /* evita che si “stiri” */
+  max-width: 100%;
+  table-layout: fixed;        /* mantiene le width */
   border-collapse: collapse;
   background-color: white;
   border-radius: 8px;
@@ -49,7 +53,21 @@
   vertical-align: top;
 }
 
-/* ✅ wrapper Job ID + copia nella stessa colonna */
+/* ✅ larghezze reali delle colonne */
+.col-jobid {
+  width: 200px;               /* cambialo e vedrai subito differenza */
+}
+
+.col-timestamp {
+  width: 150px;
+  white-space: nowrap;
+}
+
+.col-status {
+  width: 100px;
+}
+
+/* Job ID + copia nella stessa colonna */
 .jobid-wrapper {
   display: flex;
   align-items: center;
@@ -57,6 +75,7 @@
   min-width: 0;
 }
 
+/* Job id troncato con ... */
 .job-id-cell {
   flex: 1;
   min-width: 0;
@@ -167,20 +186,9 @@
 
 /* Mobile */
 @media (max-width: 768px) {
-  .job-table th:nth-child(1),
-  .job-table td:nth-child(1) {
-    width: 200px;
-  }
-
-  .job-table th:nth-child(2),
-  .job-table td:nth-child(2) {
-    width: 140px;
-  }
-
-  .job-table th:nth-child(3),
-  .job-table td:nth-child(3) {
-    width: 130px;
-  }
+  .col-jobid { width: 180px; }
+  .col-timestamp { width: 140px; }
+  .col-status { width: 120px; }
 
   .job-id-cell {
     white-space: normal;
