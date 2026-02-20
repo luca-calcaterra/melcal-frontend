@@ -56,16 +56,16 @@
    - Timestamp e Stato come prima
 */
 .col-jobid {
-  width: 300px; /* <-- RIDUCI QUI (es: 260px) se la vuoi ancora più corta */
+  width: 200px; /* <-- RIDUCI QUI (es: 260px) se la vuoi ancora più corta */
 }
 
 .col-timestamp {
-  width: 190px;
+  width: 150px;
   white-space: nowrap;
 }
 
 .col-status {
-  width: 180px;
+  width: 100px;
 }
 
 /* ✅ Job ID + bottone copia nella stessa colonna */
