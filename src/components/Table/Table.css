@@ -28,13 +28,13 @@
 
 .table-scroll {
   width: 100%;
-  overflow-x: hidden;
+  overflow-x: auto;
   margin-top: 12px;
 }
 
 .job-table {
   width: 100%;
-  table-layout: fixed;
+  table-layout: auto;
   border-collapse: collapse;
   background-color: white;
   border-radius: 8px;
@@ -47,23 +47,6 @@
   padding: 8px 10px;
   text-align: left;
   vertical-align: top;
-}
-
-/* ✅ FORZIAMO LE COLONNE anche senza className nel JSX */
-.job-table th:nth-child(1),
-.job-table td:nth-child(1) {
-  width: 220px; /* Job ID (qui decidi tu) */
-}
-
-.job-table th:nth-child(2),
-.job-table td:nth-child(2) {
-  width: 160px; /* Timestamp */
-  white-space: nowrap;
-}
-
-.job-table th:nth-child(3),
-.job-table td:nth-child(3) {
-  width: 140px; /* Stato */
 }
 
 /* ✅ wrapper Job ID + copia nella stessa colonna */
