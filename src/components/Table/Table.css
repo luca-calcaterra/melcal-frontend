@@ -1,11 +1,10 @@
 .table-container {
-  width: 100%;
+  width: fit-content;
 }
 
 .table-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 12px;
 }
 
