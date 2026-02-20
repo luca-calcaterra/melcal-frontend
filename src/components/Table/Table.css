@@ -26,17 +26,17 @@
   cursor: not-allowed;
 }
 
-/* wrapper per evitare overflow su schermi stretti */
+/* niente overflow orizzontale brutto */
 .table-scroll {
   width: 100%;
-  overflow-x: auto;
+  overflow-x: hidden;
   margin-top: 12px;
 }
 
-/* ✅ tabella compatta: si espande solo quanto serve al contenuto */
+/* ✅ la tabella NON sconfina: si adatta al container */
 .job-table {
-  width: auto;
-  min-width: max-content;
+  width: 100%;
+  table-layout: fixed;          /* fondamentale */
   border-collapse: collapse;
   background-color: white;
   border-radius: 8px;
@@ -49,39 +49,44 @@
   padding: 8px 10px;
   text-align: left;
   vertical-align: top;
-  white-space: nowrap; /* colonne compatte */
 }
 
-.job-table th {
-  background-color: #f5f5f5;
-  font-weight: 600;
-}
-
-/* ✅ colonne “min-content” */
-.job-table th.col-jobid,
-.job-table td.col-jobid,
-.job-table th.col-timestamp,
-.job-table td.col-timestamp,
-.job-table th.col-status,
-.job-table td.col-status,
-.job-table th.col-actions,
-.job-table td.col-actions {
-  width: 1%;
-}
-
-.job-table th.col-actions,
-.job-table td.col-actions {
+/* colonne: manteniamo actions stretta, le altre si distribuiscono */
+.col-actions {
+  width: 96px;                 /* abbastanza per bottone + “copiato” */
+  white-space: nowrap;
   text-align: right;
 }
 
+.col-timestamp {
+  width: 190px;                /* timestamp compatto */
+  white-space: nowrap;
+}
+
+.col-status {
+  width: 180px;                /* pill + testo */
+}
+
+.col-jobid {
+  width: auto;                 /* prende lo spazio rimanente */
+}
+
+/* ✅ Job id: non allarga la tabella, si tronca */
 .job-id-cell {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
+/* Timestamp */
 .job-ts-cell {
   font-size: 13px;
   color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Status */
@@ -94,6 +99,10 @@
   font-size: 12px;
   font-weight: 600;
   border: 1px solid transparent;
+  white-space: nowrap;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .status-icon {
@@ -139,13 +148,13 @@
   color: #495057;
 }
 
-/* ✅ solo l'errore può andare a capo (non allarga la tabella) */
+/* Errore: non deve allargare la tabella */
 .status-error-inline {
   margin-top: 6px;
   font-size: 12px;
   color: #842029;
-  max-width: 360px;
   white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .copy-btn {
@@ -167,14 +176,15 @@
   font-weight: 600;
 }
 
-/* Mobile: consenti wrap generale per evitare overflow */
+/* Mobile: permetti al job id di andare a capo se serve */
 @media (max-width: 768px) {
-  .job-table th,
-  .job-table td {
-    white-space: normal;
-  }
+  .col-timestamp { width: 160px; }
+  .col-status { width: 150px; }
 
   .job-id-cell {
-    white-space: nowrap;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    overflow-wrap: anywhere;
   }
 }
