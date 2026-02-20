@@ -7,13 +7,13 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 function formatTimestamp(ts) {
   if (!ts) return "-";
   const d = new Date(ts);
-  if (Number.isNaN(d.getTime())) return ts; // fallback se arriva un formato non ISO
+  if (Number.isNaN(d.getTime())) return ts;
   return d.toLocaleString();
 }
 
 function getStatusMeta(job) {
   const status = (job?.status || "").toLowerCase();
-  // Nota: dal tuo backend vediamo anche "staging"/"unknown" ecc.
+
   if (status === "running") {
     return { label: "Running", type: "running", icon: "↻" };
   }
@@ -60,10 +60,10 @@ export default function Table() {
 
   useEffect(() => {
     if (token) fetchJobs();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
   const sortedJobs = useMemo(() => {
-    // Ordina dal più recente (se timestamp valido)
     return [...jobs].sort((a, b) => {
       const ta = new Date(a?.timestamp || 0).getTime();
       const tb = new Date(b?.timestamp || 0).getTime();
@@ -97,7 +97,6 @@ export default function Table() {
       </div>
 
       {loading && <p>Caricamento...</p>}
-
       {!loading && sortedJobs.length === 0 && <p>Nessun job trovato</p>}
 
       {!loading && sortedJobs.length > 0 && (
@@ -105,9 +104,9 @@ export default function Table() {
           <table className="job-table">
             <thead>
               <tr>
-                <th>Job ID</th>
-                <th>Timestamp</th>
-                <th>Stato</th>
+                <th className="col-jobid">Job ID</th>
+                <th className="col-timestamp">Timestamp</th>
+                <th className="col-status">Stato</th>
                 <th className="col-actions">Copia</th>
               </tr>
             </thead>
@@ -119,11 +118,13 @@ export default function Table() {
 
                 return (
                   <tr key={job.id}>
-                    <td className="job-id-cell">{job.id}</td>
+                    <td className="col-jobid job-id-cell">{job.id}</td>
 
-                    <td className="job-ts-cell">{formatTimestamp(job.timestamp)}</td>
+                    <td className="col-timestamp job-ts-cell">
+                      {formatTimestamp(job.timestamp)}
+                    </td>
 
-                    <td className="job-status-cell">
+                    <td className="col-status job-status-cell">
                       <span
                         className={`status-pill ${meta.type}`}
                         title={
@@ -142,9 +143,7 @@ export default function Table() {
                       </span>
 
                       {meta.type === "failed" && meta.error && (
-                        <div className="status-error-inline">
-                          {meta.error}
-                        </div>
+                        <div className="status-error-inline">{meta.error}</div>
                       )}
                     </td>
 
