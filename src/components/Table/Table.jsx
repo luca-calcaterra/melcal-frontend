@@ -36,7 +36,7 @@ export default function Table() {
     try {
       setLoading(true);
 
-      const response = await fetch(`${API_BASE_URL}/rfq-validation/jobs`, {
+      const response = await fetch(`${API_BASE_URL}/rfq-validation/jobs?completed=true&status=terminated`, {
         method: "GET",
         headers: {
           accept: "application/json",

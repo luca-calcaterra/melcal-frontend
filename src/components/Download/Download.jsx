@@ -4,8 +4,6 @@ import "./Download.css";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-  import.meta.env.VITE_LOGIN_API_URL
-
 export default function Download({ initialJobId }) {
   const { token } = useAuth();
   const [jobId, setJobId] = useState("");
@@ -77,11 +75,12 @@ export default function Download({ initialJobId }) {
       // ✅ JOB COMPLETATO
       if (jobStatus.completed === true) {
         const downloadResponse = await fetch(
-          `${API_BASE_URL}/rfq-validation/results/download/${jobId}`, { 
-            method: "POST", 
+          `${API_BASE_URL}/rfq-validation/results/${jobId}/download`,
+          {
+            method: "POST",
             headers: {
-              "Content-Type": "application/json",
-              "Authorization": `Bearer ${token}`
+              "accept": "application/json",
+              "Authorization": `Bearer ${token}`,
             },
           }
         );
@@ -90,12 +89,15 @@ export default function Download({ initialJobId }) {
           throw new Error("Errore download risultati");
         }
 
-        const { result_file } = await downloadResponse.json();
+        const data = await downloadResponse.json();
 
-        await downloadFileFromUrl(
-          result_file.url,
-          result_file.name
-        );
+        if (data.error) {
+          throw new Error(data.error);
+        }
+
+        const filename = data.file?.name ?? `results-${jobId}.xlsx`;
+
+        await downloadFileFromUrl(data.sas_url, filename);
 
         showPopup("Download avviato");
         return;
