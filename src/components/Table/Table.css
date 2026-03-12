@@ -5,19 +5,24 @@
 .table-header {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 0.5rem;
 }
 
 .table-title {
   margin: 0;
+  line-height: 1;
 }
 
 .table-refresh {
-  border: 1px solid #c9ced6;
-  background: #ffffff;
-  border-radius: 6px;
-  padding: 6px 10px;
+  background: none;
+  border: none;
   cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #005386;
+  line-height: 1;
 }
 
 .table-refresh:disabled {
@@ -34,10 +39,10 @@
 
 /* ✅ la tabella NON è più 100%: diventa larga quanto le colonne */
 .job-table {
-  width: auto;                /* <-- CHIAVE */
-  display: inline-table;      /* evita che si “stiri” */
+  width: auto;
+  display: inline-table;
   max-width: 100%;
-  table-layout: fixed;        /* mantiene le width */
+  table-layout: fixed;
   border-collapse: collapse;
   background-color: white;
   border-radius: 8px;
@@ -54,7 +59,7 @@
 
 /* ✅ larghezze reali delle colonne */
 .col-jobid {
-  width: 200px;               /* cambialo e vedrai subito differenza */
+  width: 200px;
 }
 
 .col-timestamp {
@@ -166,7 +171,7 @@
 .copy-btn {
   flex-shrink: 0;
   background: none;
-  border: 1px solid #c9ced6;
+  border: 0px solid #c9ced6;
   border-radius: 6px;
   padding: 5px 8px;
   cursor: pointer;
@@ -175,6 +180,15 @@
 .copy-btn:hover {
   background: #f6f8fa;
 }
+
+.copy-icon {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 3;
+}
+
 
 .copied-badge {
   margin-top: 6px;
@@ -195,4 +209,18 @@
     text-overflow: clip;
     overflow-wrap: anywhere;
   }
+}
+
+.refresh-icon {
+  width: 50px;
+  height: 50px;
+  fill: none;
+  stroke: currentColor;
+  position: relative;
+  top: 1px;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }

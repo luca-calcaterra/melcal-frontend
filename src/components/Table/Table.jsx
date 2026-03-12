@@ -36,7 +36,7 @@ export default function Table() {
     try {
       setLoading(true);
 
-      const response = await fetch(`${API_BASE_URL}/rfq-validation/jobs?completed=true&status=terminated`, {
+      const response = await fetch(`${API_BASE_URL}/rfq-validation/jobs`, {
         method: "GET",
         headers: {
           accept: "application/json",
@@ -92,7 +92,9 @@ export default function Table() {
           disabled={loading}
           title="Aggiorna elenco"
         >
-          Aggiorna
+          <svg className={`refresh-icon ${loading ? "loading" : ""}`} viewBox="0 0 64 25">
+            <path d="M20.9844 10H17M20.9844 10V6M20.9844 10L17.6569 6.34315C14.5327 3.21895 9.46734 3.21895 6.34315 6.34315C3.21895 9.46734 3.21895 14.5327 6.34315 17.6569C9.46734 20.781 14.5327 20.781 17.6569 17.6569C18.4407 16.873 19.0279 15.9669 19.4184 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
         </button>
       </div>
 
@@ -128,7 +130,19 @@ export default function Table() {
                           onClick={() => copyToClipboard(job.id)}
                           title="Copia Job ID"
                         >
-                          ⧉
+                          <svg
+                            className="copy-icon"
+                            viewBox="0 0 64 64"
+                          >
+                            <rect x="11.13" y="17.72" width="33.92" height="36.85" rx="2.5"/>
+                            <path 
+                              d="M19.35,14.23V13.09a3.51,3.51,0,0,1,3.33-3.66H49.54a3.51,3.51,0,0,1,3.33,3.66V42.62a3.51,3.51,0,0,1-3.33,3.66H48.39"
+                              strokeWidth="3"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                            
+                          </svg>
                         </button>
                       </div>
 

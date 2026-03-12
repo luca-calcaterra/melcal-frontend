@@ -6,33 +6,68 @@ export const AuthContext = createContext();
 export function AuthProvider({ children }) {
   const [token, setToken] = useState(null);
   const [authenticated, setAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    initKeycloak({
-        onLoad: "check-sso",
-        pkceMethod: "S256",
-        checkLoginIframe: false,
-        // silentCheckSsoRedirectUri:
-        //   window.location.origin + "/silent-check-sso.html",
-      })
-      .then((auth) => {
-        if (!auth) {
-          keycloak.login();
-        } else {
-          setToken(keycloak.token);
-          setAuthenticated(true);
-        }
-      });
+    let refreshInterval = null;
+    let isMounted = true;
 
-    const interval = setInterval(() => {
-      keycloak.updateToken(60).then((refreshed) => {
-        if (refreshed) {
-          setToken(keycloak.token);
-        }
-      });
-    }, 60000);
+    const bootstrapAuth = async () => {
+      try {
+        const auth = await initKeycloak({
+          onLoad: "login-required",
+          pkceMethod: "S256",
+          checkLoginIframe: false,
+        });
 
-    return () => clearInterval(interval);
+        if (!isMounted) return;
+
+        setAuthenticated(auth);
+        setToken(keycloak.token ?? null);
+
+        refreshInterval = setInterval(async () => {
+          try {
+            const refreshed = await keycloak.updateToken(60);
+
+            if (refreshed && isMounted) {
+              setToken(keycloak.token ?? null);
+            }
+          } catch (error) {
+            console.error("Errore durante il refresh del token:", error);
+
+            if (!isMounted) return;
+
+            setToken(null);
+            setAuthenticated(false);
+
+            keycloak.login({
+              redirectUri: window.location.origin,
+            });
+          }
+        }, 60000);
+      } catch (error) {
+        console.error("Errore durante l'inizializzazione di Keycloak:", error);
+
+        if (!isMounted) return;
+
+        setToken(null);
+        setAuthenticated(false);
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    bootstrapAuth();
+
+    return () => {
+      isMounted = false;
+
+      if (refreshInterval) {
+        clearInterval(refreshInterval);
+      }
+    };
   }, []);
 
   const logout = () => {
@@ -42,7 +77,9 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ token, authenticated, logout }}>
+    <AuthContext.Provider
+      value={{ token, authenticated, loading, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );
