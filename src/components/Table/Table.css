@@ -220,7 +220,42 @@
   top: 1px;
 }
 
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+.table-pagination {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 12px;
+}
+
+.pagination-btn {
+  min-width: 34px;
+  height: 34px;
+  padding: 0 10px;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+  background: white;
+  color: #005386;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.pagination-btn:hover:not(:disabled) {
+  background: #f6f8fa;
+}
+
+.pagination-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination-btn.active {
+  background: #005386;
+  color: white;
+  border-color: #005386;
+}
+
+.app-container {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
 }
